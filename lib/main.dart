@@ -1,7 +1,9 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/routes.dart';
 import 'package:shop_app/screens/profile/profile_screen.dart';
+import 'package:shop_app/screens/sign_in/sign_in_screen.dart';
 import 'package:shop_app/screens/splash/splash_screen.dart';
 import 'package:shop_app/theme.dart';
 import 'package:shop_app/theme/thememodel.dart';
@@ -37,9 +39,16 @@ class MyApp extends StatelessWidget {
 
             title: 'My Shop App',
             //   theme: theme(),
-            home: SplashScreen(),
+            home: AnimatedSplashScreen(
+              //backgroundColor: Colors.orange,
+              splash: Icons.home,
+              duration: 3000,
+              splashTransition: SplashTransition.rotationTransition,
+
+              nextScreen:SplashScreen(),//SplashScreen() ,
+            ) ,
             // We use routeName so that we dont need to remember the name
-            initialRoute: SplashScreen.routeName,
+            //initialRoute: SplashScreen.routeName,
             routes: routes,
           );
         }),
