@@ -23,7 +23,10 @@ class SignInScreen extends StatelessWidget {
                     ? Icons.nightlight_round
                     : Icons.wb_sunny))
           ],
-          title: Text("Sign In"),
+          title: Text(
+            "Sign In",
+            // style: TextStyle(color: Colors.black),
+          ),
         ),
         body: Body(),
       );
