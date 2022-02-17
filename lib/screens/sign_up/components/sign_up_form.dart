@@ -42,6 +42,24 @@ class SignUpFormState extends State<SignUpForm> {
         password: '', email: '', confirm_pass: '', name: '', phone_no: '');
   }
 
+  void _showToastDone(BuildContext context) {
+    final scaffold = Scaffold.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('ID Created'),
+      ),
+    );
+  }
+
+  void _showToast(BuildContext context, String data) {
+    final scaffold = Scaffold.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text(data),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Formbuild(context);
@@ -76,7 +94,7 @@ class SignUpFormState extends State<SignUpForm> {
                 _formKey.currentState!.save();
                 // if all are valid then go to success screen
                 request_function();
-               // Navigator.pushNamed(context, CompleteProfileScreen.routeName);
+                // Navigator.pushNamed(context, CompleteProfileScreen.routeName);
               }
             },
           ),
@@ -271,27 +289,11 @@ class SignUpFormState extends State<SignUpForm> {
 
         if (value.token.isNotEmpty) {
           print(value.token);
-          // final snackBar = SnackBar(
-          // backgroundColor: Colors.white,
-          // content: Text("Login Successful"));
-          // scaffoldKey.currentState!
-          //     .showSnackBar(snackBar);
-          // Navigator.pushAndRemoveUntil(
-          // context,
-          // PageRouteBuilder(
-          // pageBuilder: (context, a, b) => Page2(),
-          // transitionDuration: Duration(seconds: 30),
-          // ),
-          // (route) => false);
+          this._showToastDone(context);
         } else {
-          final snackBar = SnackBar(
-              backgroundColor: Colors.black, content: Text(value.error));
-          //  scaffoldKey.currentState!.showSnackBar(snackBar);
+          this._showToast(context, value.error);
           print(value.error);
         }
-        // else {
-        //   print(value.error);
-        // }
       }
     });
   }
