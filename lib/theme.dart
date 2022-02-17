@@ -11,12 +11,14 @@ class MyThemes {
       elevation: 0,
       brightness: Brightness.light,
       iconTheme: IconThemeData(color: Colors.black),
-      titleTextStyle: TextStyle(color:Colors.black,fontSize: 22),
+      titleTextStyle: TextStyle(color: Colors.black, fontSize: 22),
       textTheme: TextTheme(
         headline6: TextStyle(color: Color(0XFF8B8B8B), fontSize: 18),
       ),
     ),
     //lightappBarTheme(),
+    snackBarTheme: SnackBarThemeData(
+        backgroundColor: Colors.orange, actionTextColor: Colors.black38),
     textTheme: TextTheme(
       bodyText1: TextStyle(color: kTextColor),
       bodyText2: TextStyle(color: kTextColor),
@@ -50,11 +52,14 @@ class MyThemes {
       elevation: 0,
       brightness: Brightness.light,
       iconTheme: IconThemeData(color: Colors.white),
-      titleTextStyle: TextStyle(color:Colors.white,fontSize: 22),
+      titleTextStyle: TextStyle(color: Colors.white, fontSize: 22),
       textTheme: TextTheme(
         headline6: TextStyle(color: Color(0XFF8B8B8B), fontSize: 18),
       ),
     ),
+    snackBarTheme: SnackBarThemeData(
+        backgroundColor: Colors.black.withOpacity(0.5),
+        actionTextColor: Colors.white),
     textTheme: TextTheme(
       bodyText1: TextStyle(color: kPrimaryLightColor),
       bodyText2: TextStyle(color: kPrimaryLightColor),
