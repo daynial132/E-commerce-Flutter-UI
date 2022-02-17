@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/api/api_service.dart';
 import 'package:shop_app/components/custom_surfix_icon.dart';
 import 'package:shop_app/components/default_button.dart';
 import 'package:shop_app/components/form_error.dart';
+import 'package:shop_app/models/SignUp.dart';
 import 'package:shop_app/screens/complete_profile/complete_profile_screen.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
-
 class SignUpForm extends StatefulWidget {
   @override
-  _SignUpFormState createState() => _SignUpFormState();
+  SignUpFormState createState() => SignUpFormState();
 }
 
-class _SignUpFormState extends State<SignUpForm> {
+class SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
-  String? email;
-  String? password;
-  String? conform_password;
+  late SignUpRequestModel signupRequestModel;
+
   bool remember = false;
   final List<String?> errors = [];
 
@@ -36,11 +36,31 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    signupRequestModel = new SignUpRequestModel(
+        password: '', email: '', confirm_pass: '', name: '', phone_no: '');
+  }
+
+  @override
   Widget build(BuildContext context) {
+    return Formbuild(context);
+    //   ProgressHUD(
+    //   child: _uiSetup(context),
+    //   inAsyncCall: isApiCallProcess,
+    //   opacity: 0.3,
+    // );
+  }
+
+  Widget Formbuild(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
         children: [
+          buildFirstNameFormField(),
+          SizedBox(height: getProportionateScreenHeight(30)),
+          buildPhoneNumberFormField(),
+          SizedBox(height: getProportionateScreenHeight(30)),
           buildEmailFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
           buildPasswordFormField(),
@@ -51,10 +71,12 @@ class _SignUpFormState extends State<SignUpForm> {
           DefaultButton(
             text: "Continue",
             press: () {
+              print(signupRequestModel.toJson());
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
                 // if all are valid then go to success screen
-                Navigator.pushNamed(context, CompleteProfileScreen.routeName);
+                request_function();
+               // Navigator.pushNamed(context, CompleteProfileScreen.routeName);
               }
             },
           ),
@@ -63,26 +85,88 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
+  TextFormField buildPhoneNumberFormField() {
+    return TextFormField(
+      keyboardType: TextInputType.phone,
+      onSaved: (newValue) => signupRequestModel.phone_no = newValue!,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          removeError(error: kPhoneNumberNullError);
+        } else if (value.length >= 11) {
+          removeError(error: kShortPhoneError);
+        }
+        return null;
+      },
+      validator: (value) {
+        if (value!.isEmpty) {
+          addError(error: kPhoneNumberNullError);
+          return "";
+        } else if (value.length < 11) {
+          addError(error: kShortPhoneError);
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Phone Number",
+        hintText: "Enter your phone number",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Phone.svg"),
+      ),
+    );
+  }
+
+  TextFormField buildFirstNameFormField() {
+    return TextFormField(
+      onSaved: (newValue) => signupRequestModel.name = newValue!,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          removeError(error: kNamelNullError);
+        }
+        return null;
+      },
+      validator: (value) {
+        if (value!.isEmpty) {
+          addError(error: kNamelNullError);
+          return "";
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "First Name",
+        hintText: "Enter your first name",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
+      ),
+    );
+  }
+
   TextFormField buildConformPassFormField() {
     return TextFormField(
       obscureText: true,
-      onSaved: (newValue) => conform_password = newValue,
+      onSaved: (newValue) => signupRequestModel.confirm_pass = newValue!,
       onChanged: (value) {
         if (value.isNotEmpty) {
           removeError(error: kPassNullError);
-        } else if (value.isNotEmpty && password == conform_password) {
-          removeError(error: kMatchPassError);
         }
-        conform_password = value;
+        //TODO
+        // else if (value.isNotEmpty && password == conform_password) {
+        //   removeError(error: kMatchPassError);
+        // }
+        signupRequestModel.confirm_pass = value;
       },
       validator: (value) {
         if (value!.isEmpty) {
           addError(error: kPassNullError);
           return "";
-        } else if ((password != value)) {
-          addError(error: kMatchPassError);
-          return "";
         }
+        // else if ((signupRequestModel.password != value)) {
+        //   addError(error: kMatchPassError);
+        //   return "";
+        // }
         return null;
       },
       decoration: InputDecoration(
@@ -99,14 +183,14 @@ class _SignUpFormState extends State<SignUpForm> {
   TextFormField buildPasswordFormField() {
     return TextFormField(
       obscureText: true,
-      onSaved: (newValue) => password = newValue,
+      onSaved: (newValue) => signupRequestModel.password = newValue!,
       onChanged: (value) {
         if (value.isNotEmpty) {
           removeError(error: kPassNullError);
         } else if (value.length >= 8) {
           removeError(error: kShortPassError);
         }
-        password = value;
+        signupRequestModel.password = value;
       },
       validator: (value) {
         if (value!.isEmpty) {
@@ -132,7 +216,7 @@ class _SignUpFormState extends State<SignUpForm> {
   TextFormField buildEmailFormField() {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
-      onSaved: (newValue) => email = newValue,
+      onSaved: (newValue) => signupRequestModel.email = newValue!,
       onChanged: (value) {
         if (value.isNotEmpty) {
           removeError(error: kEmailNullError);
@@ -160,5 +244,55 @@ class _SignUpFormState extends State<SignUpForm> {
         suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Mail.svg"),
       ),
     );
+  }
+
+  bool validateAndSave() {
+    final form = _formKey.currentState;
+    if (form!.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
+  request_function() async {
+//  print(loginRequestModel.toJson());
+//
+//     setState(() {
+//       isApiCallProcess = true;
+//     });
+
+    APIService apiService = new APIService();
+    apiService.signup(signupRequestModel).then((value) {
+      if (value != null) {
+        // setState(() {
+        //   isApiCallProcess = false;
+        // });
+
+        if (value.token.isNotEmpty) {
+          print(value.token);
+          // final snackBar = SnackBar(
+          // backgroundColor: Colors.white,
+          // content: Text("Login Successful"));
+          // scaffoldKey.currentState!
+          //     .showSnackBar(snackBar);
+          // Navigator.pushAndRemoveUntil(
+          // context,
+          // PageRouteBuilder(
+          // pageBuilder: (context, a, b) => Page2(),
+          // transitionDuration: Duration(seconds: 30),
+          // ),
+          // (route) => false);
+        } else {
+          final snackBar = SnackBar(
+              backgroundColor: Colors.black, content: Text(value.error));
+          //  scaffoldKey.currentState!.showSnackBar(snackBar);
+          print(value.error);
+        }
+        // else {
+        //   print(value.error);
+        // }
+      }
+    });
   }
 }
