@@ -5,6 +5,7 @@ import 'package:shop_app/components/default_button.dart';
 import 'package:shop_app/components/form_error.dart';
 import 'package:shop_app/models/SignUp.dart';
 import 'package:shop_app/screens/complete_profile/complete_profile_screen.dart';
+import 'package:shop_app/screens/sign_in/sign_in_screen.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -42,11 +43,12 @@ class SignUpFormState extends State<SignUpForm> {
         password: '', email: '', confirm_pass: '', name: '', phone_no: '');
   }
 
-  void _showToastDone(BuildContext context) {
+  _showToastDone(BuildContext context) async {
     final scaffold = Scaffold.of(context);
     scaffold.showSnackBar(
       SnackBar(
         content: const Text('ID Created'),
+        elevation: 1,
       ),
     );
   }
@@ -56,6 +58,7 @@ class SignUpFormState extends State<SignUpForm> {
     scaffold.showSnackBar(
       SnackBar(
         content: Text(data),
+        elevation: 1,
       ),
     );
   }
@@ -281,7 +284,7 @@ class SignUpFormState extends State<SignUpForm> {
 //     });
 
     APIService apiService = new APIService();
-    apiService.signup(signupRequestModel).then((value) {
+    apiService.signup(signupRequestModel).then((value) async {
       if (value != null) {
         // setState(() {
         //   isApiCallProcess = false;
@@ -289,7 +292,9 @@ class SignUpFormState extends State<SignUpForm> {
 
         if (value.token.isNotEmpty) {
           print(value.token);
-          this._showToastDone(context);
+
+          Navigator.pushNamed(context, SignInScreen.routeName);
+          await this._showToastDone(context);
         } else {
           this._showToast(context, value.error);
           print(value.error);

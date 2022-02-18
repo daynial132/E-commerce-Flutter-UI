@@ -58,8 +58,8 @@ class MyThemes {
       ),
     ),
     snackBarTheme: SnackBarThemeData(
-        backgroundColor: Colors.black.withOpacity(0.5),
-        actionTextColor: Colors.white),
+        backgroundColor: Colors.grey,
+        actionTextColor: Colors.black),
     textTheme: TextTheme(
       bodyText1: TextStyle(color: kPrimaryLightColor),
       bodyText2: TextStyle(color: kPrimaryLightColor),
