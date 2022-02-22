@@ -4,18 +4,28 @@ import 'package:shop_app/components/custom_surfix_icon.dart';
 import 'package:shop_app/components/default_button.dart';
 import 'package:shop_app/components/form_error.dart';
 import 'package:shop_app/models/SignUp.dart';
-import 'package:shop_app/screens/complete_profile/complete_profile_screen.dart';
+
 import 'package:shop_app/screens/sign_in/sign_in_screen.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class SignUpForm extends StatefulWidget {
+  bool isMyProcess;
+
+   final ValueChanged<bool> parentAction;
+
+  SignUpForm({ required this.isMyProcess,required this.parentAction});
   @override
   SignUpFormState createState() => SignUpFormState();
 }
 
 class SignUpFormState extends State<SignUpForm> {
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
   final _formKey = GlobalKey<FormState>();
   late SignUpRequestModel signupRequestModel;
 
@@ -282,20 +292,22 @@ class SignUpFormState extends State<SignUpForm> {
 //     setState(() {
 //       isApiCallProcess = true;
 //     });
-
+    widget.parentAction(true);
     APIService apiService = new APIService();
     apiService.signup(signupRequestModel).then((value) async {
       if (value != null) {
         // setState(() {
         //   isApiCallProcess = false;
         // });
-
+        widget.parentAction(false);
         if (value.token.isNotEmpty) {
           print(value.token);
 
-          Navigator.pushNamed(context, SignInScreen.routeName);
+        //  Navigator.pushNamed(context, SignInScreen.routeName);
           await this._showToastDone(context);
         } else {
+
+      //    Navigator.of(context, rootNavigator: true).pop();
           this._showToast(context, value.error);
           print(value.error);
         }
